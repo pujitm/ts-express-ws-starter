@@ -4,8 +4,12 @@ import path = require('path');
 
 import routes from './routes/index';
 import users from './routes/user';
+import streams from './routes/streams';
 
 var app = express();
+// Make sure to set up the express-ws module before loading or defining your routers!
+// See https://www.npmjs.com/package/express-ws for documentation
+var expressWs = require('express-ws')(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -13,8 +17,10 @@ app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Use Routers
 app.use('/', routes);
 app.use('/users', users);
+app.use('/stream', streams);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -27,6 +33,7 @@ app.use(function (req, res, next) {
 
 // development error handler
 // will print stacktrace
+// For non-node developers: https://stackoverflow.com/a/39245510/6656631
 if (app.get('env') === 'development') {
     app.use((err: any, req, res, next) => {
         res.status(err['status'] || 500);
