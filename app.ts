@@ -2,14 +2,16 @@
 import express = require('express');
 import path = require('path');
 
-import routes from './routes/index';
-import users from './routes/user';
-import streams from './routes/streams';
-
 var app = express();
 // Make sure to set up the express-ws module before loading or defining your routers!
 // See https://www.npmjs.com/package/express-ws for documentation
 var expressWs = require('express-ws')(app);
+
+import routes from './routes/index';
+import users from './routes/user';
+import streams from './routes/streams';
+
+var router = express.Router();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
