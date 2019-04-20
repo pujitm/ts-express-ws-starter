@@ -5,23 +5,37 @@ import express = require('express');
 const router = express.Router();
 
 let twitterCounter = 0;
+let twitterStreamIntervalId;
 
 // GET Websocket Stream listings
-router.ws('/echo', function (ws, req) {
+router.ws('/twitter_followers', function (ws, req) {
     ws.on('message', function (msg) {
-        ws.send(msg);
+        ws.send(`msg: ${msg}`);
     });
 
-    setInterval(
+    twitterStreamIntervalId = setInterval(
         function () {
-            ws.send(twitterCounter);
+            switch (ws.readyState) {
+                case ws.OPEN:
+                    ws.send(twitterCounter);
+                    twitterCounter++;
+                    break;
+
+                case ws.CLOSED: stopTwitterStream();
+                default:
+                    break;
+            }
         }, 2000
     );
 });
 
-// GET Websocket Stream listings
+function stopTwitterStream() {
+    clearInterval(twitterStreamIntervalId);
+}
+
+// GET Twitter Followers
 router.get('/twitter', (req: express.Request, res: express.Response) => {
-    res.send("respond with stream listings");
+    res.send("1");
 });
 
 export default router;
